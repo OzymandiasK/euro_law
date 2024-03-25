@@ -1,4 +1,6 @@
 streamlit
 folium
 geopandas
-requests
+streamlit_folium
+pandas
+openpyxl
