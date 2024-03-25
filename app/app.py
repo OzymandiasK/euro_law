@@ -32,8 +32,8 @@ def main():
 
     # Add a simple tooltip with country name and tax rate
     tooltip = folium.features.GeoJsonTooltip(
-        fields=["name", "Tax Rate"],
-        aliases=["Country", "Tax Rate"],
+        fields=["name", "Tax Rate", "Specificities"],
+        aliases=["Country", "Tax Rate", "Specificities"],
         sticky=False,
     )
 
@@ -50,6 +50,12 @@ def main():
     folium.GeoJson(
         data=merged_data,
         style_function=style_function,
+        name="Tax Rate (%)",
+        highlight_function=lambda x: (
+            {"weight": 3, "fillOpacity": 0.9}
+            if x["type"] == "Feature"
+            else {"weight": 3, "fillOpacity": 0.9}
+        ),
         tooltip=tooltip,
     ).add_to(folium_map)
 
