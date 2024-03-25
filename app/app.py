@@ -15,7 +15,7 @@ def main():
     scopes = ["https://www.googleapis.com/auth/spreadsheets"]
     # Access credentials from Streamlit secrets
     creds_dict = st.secrets["gcp_service_account"]
-
+    print(creds_dict)
     # Create Credentials object directly
     creds = Credentials.from_service_account_info(creds_dict)
 
