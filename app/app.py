@@ -17,7 +17,9 @@ def main():
     excel_data["Tax Rate"] = pd.to_numeric(excel_data["Tax Rate"], errors="coerce")
 
     # Ensure the GeoJSON file is read into a GeoDataFrame
-    europe_geojson = gpd.read_file("/app/europe.geojson")
+    current_dir = os.path.dirname(os.path.abspath(__file__))
+    geojson_path = os.path.join(current_dir, "europe.geojson")
+    europe_geojson = gpd.read_file(geojson_path)
 
     # Merge the Excel DataFrame with the GeoDataFrame based on the country name
     merged_data = gpd.GeoDataFrame(
