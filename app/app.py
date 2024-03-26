@@ -6,90 +6,90 @@ import pandas as pd
 import branca.colormap as cm
 import os
 
+# Set page config
+st.set_page_config(
+    page_title="EU Freelancer Fiscal Map",
+    page_icon="🌍",
+    layout="wide",
+    initial_sidebar_state="expanded",
+)
 
-def main():
-    st.title("European Freelancer Fiscal Laws Map")
 
-    # Sidebar for selecting a country and displaying specific information
-    st.sidebar.header("Country Details")
-    # Load the Excel data into a DataFrame
+# Function to load data
+def load_data():
     current_dir = os.path.dirname(os.path.abspath(__file__))
     data_path = os.path.join(current_dir, "data", "Fiscal_data_EU.xlsx")
+    geojson_path = os.path.join(current_dir, "europe.geojson")
+
     excel_data = pd.read_excel(data_path)
     excel_data["Tax Rate"] = pd.to_numeric(excel_data["Tax Rate"], errors="coerce")
-
-    # Dropdown for selecting a country
-    country_list = excel_data["Country"].unique().tolist()
-    selected_country = st.sidebar.selectbox("Select a country:", country_list)
-
-    # Display selected country tax details
-    country_info = excel_data[excel_data["Country"] == selected_country]
-    if not country_info.empty:
-        st.sidebar.markdown(
-            f"**Tax Rate:** {country_info['Tax Rate'].values[0]*100:.2f}%"
-        )
-        st.sidebar.markdown(
-            f"**Specificities:** {country_info['Specificities'].values[0]}"
-        )
-    else:
-        st.sidebar.write("No data available for the selected country.")
-
-    # Ensure the GeoJSON file is read into a GeoDataFrame
-    geojson_path = os.path.join(current_dir, "europe.geojson")
     europe_geojson = gpd.read_file(geojson_path)
 
-    # Merge and format data
-    merged_data = gpd.GeoDataFrame(
-        europe_geojson.merge(excel_data, left_on="name", right_on="Country")
-    )
-    merged_data["Tax Rate %"] = merged_data["Tax Rate"].apply(lambda x: f"{x*100:.2f}%")
+    return excel_data, europe_geojson
 
-    linear = cm.LinearColormap(
-        ["green", "yellow", "red"],
-        vmin=excel_data["Tax Rate"].min(),
-        vmax=excel_data["Tax Rate"].max(),
+
+def main():
+    st.title("🌍 European Freelancer Fiscal Laws Map 📊")
+    st.markdown(
+        "Explore the fiscal laws and tax rates for freelancers across Europe. Select a country from the sidebar for more details!"
     )
 
-    # Map creation
-    folium_map = folium.Map(location=[54.5260, 15.2551], zoom_start=4)
-    tooltip = folium.features.GeoJsonTooltip(
-        fields=["name", "Tax Rate %", "Specificities"],
-        aliases=["Country", "Tax Rate", "Specificities"],
-        sticky=False,
-    )
+    excel_data, europe_geojson = load_data()
 
-    def style_function(feature):
-        tax_rate = feature["properties"]["Tax Rate"]
-        return {
-            "fillColor": linear(tax_rate),
-            "color": "black",
-            "weight": 1,
-            "fillOpacity": 0.7,
-        }
+    # Sidebar
+    with st.sidebar:
+        st.header("Country Details 📝")
+        selected_country = st.selectbox(
+            "Select a country:", sorted(excel_data["Country"].unique())
+        )
+        country_info = excel_data[excel_data["Country"] == selected_country].iloc[0]
+        st.markdown(f"**Tax Rate:** {country_info['Tax Rate']*100:.2f}%")
+        st.markdown(f"**Specificities:** {country_info['Specificities']}")
 
-    folium.GeoJson(
-        data=merged_data,
-        style_function=style_function,
-        name="Tax Rate (%)",
-        tooltip=tooltip,
-    ).add_to(folium_map)
-    folium_static(folium_map, width=1250, height=900)
+    # Main Content
+    col1, col2 = st.columns((2, 1))
+    with col1:
+        merged_data = gpd.GeoDataFrame(
+            europe_geojson.merge(excel_data, left_on="name", right_on="Country")
+        )
+        merged_data["Tax Rate %"] = merged_data["Tax Rate"].apply(
+            lambda x: f"{x*100:.2f}%"
+        )
 
-    # Display source links as clickable URLs in an expander to reduce clutter
-    with st.expander("Source Links"):
-        for _, row in excel_data.iterrows():
-            st.markdown(f"[{row['Country']}]({row['Source']})", unsafe_allow_html=True)
+        linear = cm.LinearColormap(
+            ["green", "yellow", "red"],
+            vmin=excel_data["Tax Rate"].min(),
+            vmax=excel_data["Tax Rate"].max(),
+        )
+        folium_map = folium.Map(location=[54.5260, 15.2551], zoom_start=4)
+        tooltip = folium.features.GeoJsonTooltip(
+            fields=["name", "Tax Rate %", "Specificities"],
+            aliases=["Country", "Tax Rate", "Specificities"],
+            sticky=False,
+        )
+        folium.GeoJson(
+            data=merged_data,
+            style_function=lambda feature: {
+                "fillColor": linear(feature["properties"]["Tax Rate"]),
+                "color": "black",
+                "weight": 1,
+                "fillOpacity": 0.7,
+            },
+            name="Tax Rate (%)",
+            tooltip=tooltip,
+        ).add_to(folium_map)
+        folium_static(folium_map, width=800, height=650)
 
-    # Methodological Notes Expander
-    with st.expander("Methodological Notes"):
+    with col2:
+        st.subheader("Methodological Notes 📘")
         st.write(
             """
-            This interactive map is designed to provide an overview of freelancer fiscal laws and tax rates across Europe. 
-            The colors on the map indicate the relative tax rate, with green being the lowest and red the highest. 
-            The data is sourced from publicly available information and is regularly updated to reflect the latest rates and laws.
-            For specific inquiries or detailed analysis, consulting a tax professional is recommended.
+            This interactive map provides a visual representation of fiscal laws and tax rates for freelancers across Europe. Colors on the map indicate the relative tax rate, with green being the lowest and red the highest. Data is sourced from publicly available information and is updated regularly.
         """
         )
+        st.markdown(f"**Selected Country:** {selected_country}")
+        st.markdown(f"**Tax Rate:** {country_info['Tax Rate']*100:.2f}%")
+        st.markdown(f"**Specificities:** {country_info['Specificities']}")
 
 
 if __name__ == "__main__":
