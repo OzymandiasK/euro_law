@@ -29,7 +29,7 @@ def load_data():
 
 
 def main():
-    st.title("🌍 European Freelancer Fiscal Laws Map 📊")
+    st.title("IT Freelancer - Fiscal Map")
     st.markdown(
         "Explore the fiscal laws and tax rates for freelancers across Europe. Select a country from the sidebar for more details!"
     )
@@ -38,7 +38,7 @@ def main():
 
     # Sidebar
     with st.sidebar:
-        st.header("Country Details 📝")
+        st.header("Country Details")
         selected_country = st.selectbox(
             "Select a country:", sorted(excel_data["Country"].unique())
         )
@@ -81,10 +81,11 @@ def main():
         folium_static(folium_map, width=800, height=650)
 
     with col2:
-        st.subheader("Methodological Notes 📘")
+        st.subheader("Methodological Notes")
         st.write(
             """
-            This interactive map provides a visual representation of fiscal laws and tax rates for freelancers across Europe. Colors on the map indicate the relative tax rate, with green being the lowest and red the highest. Data is sourced from publicly available information and is updated regularly.
+            This interactive map provides a visual representation of fiscal laws and tax rates for IT freelancers across Europe.
+            Colors on the map indicate the relative tax rate, with green being the lowest and red the highest. Data is sourced from publicly available information and is updated regularly.
         """
         )
         st.markdown(f"**Selected Country:** {selected_country}")
