@@ -5,6 +5,7 @@ import geopandas as gpd
 import pandas as pd
 import branca.colormap as cm
 import os
+import logging
 
 # Set page config
 st.set_page_config(
@@ -92,7 +93,10 @@ def main():
         # st.markdown(f"**Tax Rate:** {country_info['Tax Rate']*100:.2f}%")
         # st.markdown(f"**Specificities:** {country_info['Specificities']}")
     # Debug: Check data for France and the Netherlands
-    print("TEST", merged_data[merged_data["name"].isin(["France", "Netherlands"])])
+    france_netherlands = merged_data[
+        merged_data["name"].isin(["France", "Netherlands"])
+    ]
+    logging.debug(f"Data for France and Netherlands:\n{france_netherlands}")
 
 
 if __name__ == "__main__":
