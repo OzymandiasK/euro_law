@@ -4,45 +4,14 @@ import folium
 import geopandas as gpd
 import pandas as pd
 import branca.colormap as cm  # Import the cm module
-import gspread
-from google.oauth2.service_account import Credentials
 
 
 def main():
     st.title("European Freelancer Fiscal Laws Map")
 
-    # Set up Google Sheets credentials
-    scopes = ["https://www.googleapis.com/auth/spreadsheets"]
-    # Access credentials from Streamlit secrets
-    creds_dict = st.secrets["gcp_service_account"]
-    print(creds_dict)
-    # Create Credentials object directly
-    creds = Credentials.from_service_account_info(creds_dict)
-
-    client = gspread.authorize(creds)
-
-    # Open the Google Sheet by its ID
-    sheet_id = "1IoaYBs5j48SF_ES-6RRedkA6-3Eh-12Y4rhibNkAEac"
-    try:
-        sheet = client.open_by_key(sheet_id)
-    except gspread.SpreadsheetNotFound:
-        st.error(
-            "Spreadsheet not found. Check if the sheet exists and the service account has access to it."
-        )
-        return
-    except gspread.exceptions.APIError as e:
-        st.error(f"An API error occurred: {e}")
-        return
-    worksheet = sheet.sheet1
-
-    # Read data from the sheet
-    ls_data = worksheet.get_all_values()
-    # Convert Google Sheets data to DataFrame
-    headers = ls_data.pop(0)  # Assumes the first row is headers
-    excel_data = pd.DataFrame(ls_data, columns=headers)
-
     # Load the Excel data into a DataFrame
-    # excel_data = pd.read_excel("/app/data/Fiscal_data_EU.xlsx")
+    excel_data = pd.read_excel("/app/data/Fiscal_data_EU.xlsx")
+
     excel_data["Tax Rate"] = pd.to_numeric(excel_data["Tax Rate"], errors="coerce")
 
     # Ensure the GeoJSON file is read into a GeoDataFrame

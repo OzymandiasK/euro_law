@@ -27,6 +27,7 @@ COPY requirements.txt /app/
 COPY data/ /app/data/
 COPY eurolaw-883246ae6395.json /app/eurolaw-883246ae6395.json
 
+
 # Install Python dependencies
 RUN pip install --no-cache-dir -r requirements.txt
 
