@@ -25,6 +25,7 @@ def main():
     merged_data = gpd.GeoDataFrame(
         europe_geojson.merge(excel_data, left_on="name", right_on="Country")
     )
+    merged_data["Tax Rate %"] = merged_data["Tax Rate"].apply(lambda x: f"{x:.2f}%")
 
     linear = cm.LinearColormap(
         ["green", "yellow", "red"],
@@ -37,7 +38,7 @@ def main():
 
     # Add a simple tooltip with country name and tax rate
     tooltip = folium.features.GeoJsonTooltip(
-        fields=["name", "Tax Rate", "Specificities"],
+        fields=["name", "Tax Rate %", "Specificities"],
         aliases=["Country", "Tax Rate", "Specificities"],
         sticky=False,
     )
