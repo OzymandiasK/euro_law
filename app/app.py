@@ -91,6 +91,8 @@ def main():
         # st.markdown(f"**Selected Country:** {selected_country}")
         # st.markdown(f"**Tax Rate:** {country_info['Tax Rate']*100:.2f}%")
         # st.markdown(f"**Specificities:** {country_info['Specificities']}")
+    # Debug: Check data for France and the Netherlands
+    print(merged_data[merged_data["name"].isin(["France", "Netherlands"])])
 
 
 if __name__ == "__main__":
