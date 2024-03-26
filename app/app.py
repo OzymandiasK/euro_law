@@ -25,7 +25,7 @@ def main():
     merged_data = gpd.GeoDataFrame(
         europe_geojson.merge(excel_data, left_on="name", right_on="Country")
     )
-    merged_data["Tax Rate %"] = merged_data["Tax Rate"].apply(lambda x: f"{x:.2f}%")
+    merged_data["Tax Rate %"] = merged_data["Tax Rate"].apply(lambda x: f"{x*100:.2f}%")
 
     linear = cm.LinearColormap(
         ["green", "yellow", "red"],
