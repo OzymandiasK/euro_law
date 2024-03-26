@@ -4,14 +4,16 @@ import folium
 import geopandas as gpd
 import pandas as pd
 import branca.colormap as cm  # Import the cm module
+import os
 
 
 def main():
     st.title("European Freelancer Fiscal Laws Map")
 
     # Load the Excel data into a DataFrame
-    excel_data = pd.read_excel("/app/data/Fiscal_data_EU.xlsx")
-
+    current_dir = os.path.dirname(os.path.abspath(__file__))
+    data_path = os.path.join(current_dir, "data", "Fiscal_data_EU.xlsx")
+    excel_data = pd.read_excel(data_path)
     excel_data["Tax Rate"] = pd.to_numeric(excel_data["Tax Rate"], errors="coerce")
 
     # Ensure the GeoJSON file is read into a GeoDataFrame
