@@ -61,7 +61,7 @@ def main():
             vmin=excel_data["Tax Rate"].min(),
             vmax=excel_data["Tax Rate"].max(),
         )
-        folium_map = folium.Map(location=[54.5260, 15.2551], zoom_start=4.5)
+        folium_map = folium.Map(location=[54.5260, 15.2551], zoom_start=4)
         tooltip = folium.features.GeoJsonTooltip(
             fields=["name", "Tax Rate %", "Specificities"],
             aliases=["Country", "Tax Rate", "Specificities"],
@@ -78,7 +78,7 @@ def main():
             name="Tax Rate (%)",
             tooltip=tooltip,
         ).add_to(folium_map)
-        folium_static(folium_map, width=1100, height=850)
+        folium_static(folium_map, width=1000, height=850)
 
     with col2:
         st.subheader("Methodological Notes")
