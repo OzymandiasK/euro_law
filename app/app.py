@@ -78,7 +78,7 @@ def main():
             name="Tax Rate (%)",
             tooltip=tooltip,
         ).add_to(folium_map)
-        folium_static(folium_map, width=800, height=650)
+        folium_static(folium_map, width=950, height=850)
 
     with col2:
         st.subheader("Methodological Notes")
@@ -88,9 +88,9 @@ def main():
             Colors on the map indicate the relative tax rate, with green being the lowest and red the highest. Data is sourced from publicly available information and is updated regularly.
         """
         )
-        st.markdown(f"**Selected Country:** {selected_country}")
-        st.markdown(f"**Tax Rate:** {country_info['Tax Rate']*100:.2f}%")
-        st.markdown(f"**Specificities:** {country_info['Specificities']}")
+        # st.markdown(f"**Selected Country:** {selected_country}")
+        # st.markdown(f"**Tax Rate:** {country_info['Tax Rate']*100:.2f}%")
+        # st.markdown(f"**Specificities:** {country_info['Specificities']}")
 
 
 if __name__ == "__main__":
